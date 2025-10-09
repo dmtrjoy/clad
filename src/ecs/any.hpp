@@ -92,7 +92,7 @@ public:
     any& operator=(any&& other) noexcept = default;
 
     /// Destroys an `::any` and its held object, if one exists.
-    ~any() = default;
+    ~any() noexcept = default;
 
     bool operator==(const any& other) const noexcept
     {
@@ -185,7 +185,14 @@ private:
     /// \param operand The object to cast from.
     /// \return A reference to the held object.
     template <typename T>
-    friend T& any_cast(any& operand);
+    friend T& any_cast(any& operand)
+    {
+        if (operand.type() != std::type_index(typeid(T))) {
+            throw std::bad_any_cast();
+        }
+        auto* holder = static_cast<any::holder<T>*>(operand.m_pimpl.get());
+        return holder->data;
+    }
 
     /// Casts an `::any` to a constant reference of its held object.
     ///
@@ -193,29 +200,16 @@ private:
     /// \param operand The object to cast from.
     /// \return A constant reference to the held object.
     template <typename T>
-    friend const T& any_cast(const any& operand);
+    friend const T& any_cast(const any& operand)
+    {
+        if (operand.type() != std::type_index(typeid(T))) {
+            throw std::bad_any_cast();
+        }
+        const auto* holder
+            = static_cast<const any::holder<T>*>(operand.m_pimpl.get());
+        return holder->data;
+    }
 };
-
-template <typename T>
-T& any_cast(any& operand)
-{
-    if (operand.type() != std::type_index(typeid(T))) {
-        throw std::bad_any_cast();
-    }
-    auto* holder = static_cast<any::holder<T>*>(operand.m_pimpl.get());
-    return holder->data;
-}
-
-template <typename T>
-const T& any_cast(const any& operand)
-{
-    if (operand.type() != std::type_index(typeid(T))) {
-        throw std::bad_any_cast();
-    }
-    const auto* holder
-        = static_cast<const any::holder<T>*>(operand.m_pimpl.get());
-    return holder->data;
-}
 
 } // namespace clad
 

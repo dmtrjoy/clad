@@ -6,15 +6,36 @@
 
 namespace clad {
 
-/// A window resource.
+/// A resizable window with a title and dimensions.
 class window {
 public:
-    window(const std::string& title, int width, int height);
-    window(const window& other) = delete;
+    /// Constructs a blank `::window`.
+    ///
+    /// \param title A title displayed at the top of the window.
+    /// \param width The width of the window in pixels.
+    /// \param height The height of the window in pixels.
+    window(const std::string& title, int width, int height) noexcept;
+
+    window(const window& other) noexcept = delete;
+
+    /// Constructs a `::window` by moving the contents of another `::window`
+    /// into this one.
+    ///
+    /// \param other The object to move from. Left in a valid but unspecified
+    ///     state.
     window(window&& other) noexcept = default;
-    window& operator=(const window& other) = delete;
+
+    window& operator=(const window& other) noexcept = delete;
+
+    /// Moves the contents of another `::window` into this one.
+    ///
+    /// \param other The object to move from. Left in a valid but unspecified
+    ///     state.
+    /// \return A reference to this object.
     window& operator=(window&& other) noexcept = default;
-    ~window();
+
+    /// Destroys a `::window`.
+    ~window() noexcept;
 
     auto operator<=>(const window&) const = default;
 
