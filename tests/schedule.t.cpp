@@ -5,7 +5,7 @@
 
 #include "gtest/gtest.h"
 
-namespace eecs::test {
+namespace clad::test {
 
 namespace {
 
@@ -47,4 +47,4 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
     ASSERT_EQ(components.size(), 3);
 }
 
-} // namespace eecs::test
+} // namespace clad::test

@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-namespace eecs::test {
+namespace clad::test {
 
 // A 2D texture component. Only for testing purposes.
 struct texture2 {
@@ -104,4 +104,4 @@ TEST_F(WorldTest, View_ComponentsAreUpdated)
     }
 }
 
-} // namespace eecs::test
+} // namespace clad::test

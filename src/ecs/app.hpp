@@ -1,15 +1,15 @@
-#ifndef EECS_APP_HPP
-#define EECS_APP_HPP
+#ifndef CLAD_APP_HPP
+#define CLAD_APP_HPP
 
 #include <array>
-#include <cstdint>
 
 #include "schedule.hpp"
 #include "system.hpp"
+#include "types.hpp"
 
-namespace eecs {
+namespace clad {
 
-enum class event : uint8_t {
+enum class event : u8 {
     startup,
     update,
     shutdown,
@@ -29,6 +29,6 @@ private:
     std::array<schedule, static_cast<size_t>(event::count)> m_schedules = {};
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_APP_HPP

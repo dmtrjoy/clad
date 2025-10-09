@@ -11,34 +11,34 @@ struct vec2 {
     int y;
 };
 
-void startup(eecs::world& world) { std::println("startup"); }
+void startup(clad::world& world) { std::println("startup"); }
 
-void update(eecs::world& world)
+void update(clad::world& world)
 {
-    auto& input = world.resource<eecs::input>();
-    if (input.is_key_pressed(eecs::key::up)) {
+    auto& input = world.resource<clad::input>();
+    if (input.is_key_pressed(clad::key::up)) {
         std::println("up key is pressed");
     }
-    if (input.is_key_pressed(eecs::key::down)) {
+    if (input.is_key_pressed(clad::key::down)) {
         std::println("down key is pressed");
     }
-    if (input.is_key_pressed(eecs::key::left)) {
+    if (input.is_key_pressed(clad::key::left)) {
         std::println("left key is pressed");
     }
-    if (input.is_key_pressed(eecs::key::right)) {
+    if (input.is_key_pressed(clad::key::right)) {
         std::println("right key is pressed");
     }
 }
 
-void shutdown(eecs::world& world) { std::println("shutdown"); }
+void shutdown(clad::world& world) { std::println("shutdown"); }
 
 } // namespace
 
 int main()
 {
-    eecs::app app;
-    app.add_system(eecs::event::startup, startup)
-        .add_system(eecs::event::update, update)
-        .add_system(eecs::event::shutdown, shutdown)
+    clad::app app;
+    app.add_system(clad::event::startup, startup)
+        .add_system(clad::event::update, update)
+        .add_system(clad::event::shutdown, shutdown)
         .run();
 }

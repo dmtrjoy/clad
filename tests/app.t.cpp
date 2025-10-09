@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-namespace eecs::test {
+namespace clad::test {
 
 namespace {
 
@@ -23,4 +23,4 @@ namespace {
 //         .run();
 // }
 
-} // namespace eecs::test
+} // namespace clad::test

@@ -5,7 +5,7 @@
 
 #include "SDL3/SDL_video.h"
 
-namespace eecs {
+namespace clad {
 
 class window::impl {
 public:
@@ -33,4 +33,4 @@ window::window(const std::string& title, const int width, const int height)
 
 window::~window() = default;
 
-} // namespace eecs
+} // namespace clad

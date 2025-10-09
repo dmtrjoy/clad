@@ -1,12 +1,12 @@
-#ifndef EECS_ENTITY_HPP
-#define EECS_ENTITY_HPP
+#ifndef CLAD_ENTITY_HPP
+#define CLAD_ENTITY_HPP
 
-#include <cstdint>
+#include "types.hpp"
 
-namespace eecs {
+namespace clad {
 
-using entity = uint32_t;
+using entity = u32;
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_ENTITY_HPP

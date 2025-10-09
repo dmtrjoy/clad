@@ -1,12 +1,12 @@
-#ifndef EECS_SCHEDULE_HPP
-#define EECS_SCHEDULE_HPP
+#ifndef CLAD_SCHEDULE_HPP
+#define CLAD_SCHEDULE_HPP
 
 #include <vector>
 
 #include "system.hpp"
 #include "world.hpp"
 
-namespace eecs {
+namespace clad {
 
 class schedule {
 public:
@@ -18,6 +18,6 @@ private:
     std::vector<system> m_systems;
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_SCHEDULE_HPP

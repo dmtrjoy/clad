@@ -1,5 +1,5 @@
-#ifndef EECS_WORLD_HPP
-#define EECS_WORLD_HPP
+#ifndef CLAD_WORLD_HPP
+#define CLAD_WORLD_HPP
 
 #include <stdexcept>
 #include <tuple>
@@ -11,7 +11,7 @@
 #include "entity.hpp"
 #include "sparse_set.hpp"
 
-namespace eecs {
+namespace clad {
 
 /// A specialized container for storing, querying, and interacting with
 /// entities, components, and resources.
@@ -95,7 +95,7 @@ public:
                          std::forward_as_tuple(type_id),
                          std::forward_as_tuple(
                              std::in_place_type_t<sparse_set<T>> {}))
-                    .first;
+                     .first;
         }
 
         return any_cast<sparse_set<T>>(it->second);
@@ -145,6 +145,6 @@ private:
     std::unordered_map<std::type_index, any> m_resources;
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_WORLD_HPP

@@ -1,12 +1,12 @@
-#ifndef EECS_SYSTEM_HPP
-#define EECS_SYSTEM_HPP
+#ifndef CLAD_SYSTEM_HPP
+#define CLAD_SYSTEM_HPP
 
 #include "world.hpp"
 
-namespace eecs {
+namespace clad {
 
 using system = void (*)(world&);
 
-} // namespace eecs
+} // namespace clad
 
 #endif
