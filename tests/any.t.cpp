@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-namespace eecs::test {
+namespace clad::test {
 
 TEST(AnyTest, DefaultConstructor)
 {
@@ -32,4 +32,4 @@ TEST(AnyTest, CopyConstructor)
     EXPECT_EQ(any1, any2);
 }
 
-} // namespace eecs::test
+} // namespace clad::test

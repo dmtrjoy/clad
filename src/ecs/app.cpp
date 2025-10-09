@@ -8,7 +8,7 @@
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 
-namespace eecs {
+namespace clad {
 
 app& app::add_system(event event, system system)
 {
@@ -39,4 +39,4 @@ void app::run()
     SDL_Quit();
 }
 
-} // namespace eecs
+} // namespace clad

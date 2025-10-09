@@ -1,6 +1,11 @@
 # Introduction
 
-**<span style="color:limegreen">Eecs</span>** is a simple data-driven game engine, written in modern C++.
+Hi there! Welcome to the official documentation of **<span style="color:limegreen">eecs</span>**, a simple data-driven game engine built in modern C++.
+
+1. **Simple:** Intuitive and easy to use for beginners and experts alike.
+2. **Lightweight:** Minimal memory and space overhead.
+3. **Robust:** Features are supported correctly or not supported at all.
+4. **Portable:** Runs on virtually any hardware.
 
 ## Objectives
 
@@ -23,7 +28,9 @@ For example, one entity might have `position` and `velocity` components, while a
 ECS encourages modularity and clear separation between the program logic and the data it transforms. This makes it easier to grow, reuse, debug, and reason about your system over time. By storing related data together, ECS offers massive performance gains, particularly at scale, and greater opportunities for parallelism.
 
 
+## Building an engine
 
+Imagine you are tasked with building your own game engine. How would you go about it? Naturally, the first idea many of us would have
 
 So... what is an ECS? An ECS, short for entity-component-system, is data-oriented architecture focused on maximizing performance, modularity, and separation of concerns.
 

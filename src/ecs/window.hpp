@@ -1,10 +1,10 @@
-#ifndef EECS_WINDOW_HPP
-#define EECS_WINDOW_HPP
+#ifndef CLAD_WINDOW_HPP
+#define CLAD_WINDOW_HPP
 
 #include <memory>
 #include <string>
 
-namespace eecs {
+namespace clad {
 
 /// A window resource.
 class window {
@@ -23,6 +23,6 @@ private:
     std::unique_ptr<impl> m_pimpl;
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif // !EECS_WINDOW_HPP
+#endif // !CLAD_WINDOW_HPP

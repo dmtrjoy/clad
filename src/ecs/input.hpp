@@ -1,12 +1,13 @@
-#ifndef EECS_INPUT_HPP
-#define EECS_INPUT_HPP
+#ifndef CLAD_INPUT_HPP
+#define CLAD_INPUT_HPP
 
-#include <cstdint>
 #include <memory>
 
-namespace eecs {
+#include "types.hpp"
 
-enum class key : uint8_t {
+namespace clad {
+
+enum class key : u8 {
     left,
     right,
     up,
@@ -42,6 +43,6 @@ private:
     std::unique_ptr<impl> m_pimpl;
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_INPUT_HPP

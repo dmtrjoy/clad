@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-namespace eecs::test {
+namespace clad::test {
 
 TEST(SparseSetTest, Insert_ValueIsPresent)
 {
@@ -58,4 +58,4 @@ TEST(SparseSetTest, Erase_ValueIsRemoved)
     EXPECT_TRUE(set.empty());
 }
 
-} // namespace eecs::test
+} // namespace clad::test

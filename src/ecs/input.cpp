@@ -7,7 +7,7 @@
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_keycode.h"
 
-namespace eecs {
+namespace clad {
 
 class input::impl {
 public:
@@ -78,4 +78,4 @@ void input::poll() { m_pimpl->poll(); }
 
 bool input::quit() const { return m_pimpl->quit(); }
 
-} // namespace eecs
+} // namespace clad

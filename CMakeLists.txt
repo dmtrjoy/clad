@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0.2)
 project(
-    eecs
+    Clad
     VERSION 0.0.1
     DESCRIPTION "A game engine"
     LANGUAGES CXX

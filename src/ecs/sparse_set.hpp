@@ -1,5 +1,5 @@
-#ifndef EECS_SPARSE_SET_HPP
-#define EECS_SPARSE_SET_HPP
+#ifndef CLAD_SPARSE_SET_HPP
+#define CLAD_SPARSE_SET_HPP
 
 #include <cassert>
 #include <concepts>
@@ -10,7 +10,7 @@
 
 #include "types.hpp"
 
-namespace eecs {
+namespace clad {
 
 template <typename T, std::unsigned_integral IdType = u32>
 class sparse_set {
@@ -168,6 +168,6 @@ private:
     std::vector<value_type> m_dense_values;
 };
 
-} // namespace eecs
+} // namespace clad
 
-#endif
+#endif // !CLAD_SPARSE_SET_HPP

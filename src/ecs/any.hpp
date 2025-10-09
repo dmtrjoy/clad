@@ -1,5 +1,5 @@
-#ifndef EECS_ANY_HPP
-#define EECS_ANY_HPP
+#ifndef CLAD_ANY_HPP
+#define CLAD_ANY_HPP
 
 #include <any>
 #include <concepts>
@@ -10,7 +10,7 @@
 #include <typeindex>
 #include <utility>
 
-namespace eecs {
+namespace clad {
 
 /// A type-safe container for single values of any type.
 class any {
@@ -217,6 +217,6 @@ const T& any_cast(const any& operand)
     return holder->data;
 }
 
-} // namespace eecs
+} // namespace clad
 
-#endif // !EECS_ANY_HPP
+#endif // !CLAD_ANY_HPP
