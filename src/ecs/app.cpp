@@ -1,14 +1,34 @@
 #include "app.hpp"
 
-#include <utility>
+#include <print>
 
+#include "entity.hpp"
 #include "input.hpp"
+#include "renderer.hpp"
+#include "sprite.hpp"
+#include "transform.hpp"
 #include "window.hpp"
 
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 
 namespace clad {
+
+namespace {
+
+    void render(clad::world& world)
+    {
+        world.view<sprite, transform>(
+            [&world](
+                const entity entity, sprite& sprite, transform& transform) {
+                auto& myrenderer = world.resource<renderer>();
+                myrenderer.draw(sprite, transform);
+            });
+    }
+
+} // namespace
+
+app::app() { add_system(event::update, render); }
 
 app& app::add_system(event event, system system)
 {
@@ -22,7 +42,11 @@ void app::run()
 
     const int width { 800 };
     const int height { 600 };
+
     m_world.emplace<window>("title", width, height);
+    auto& mywindow = m_world.resource<window>();
+    m_world.emplace<renderer>(mywindow);
+
     m_world.emplace<input>();
     auto& myinput = m_world.resource<input>();
 

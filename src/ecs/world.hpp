@@ -132,7 +132,7 @@ public:
         auto& first_components {
             components<std::tuple_element_t<0, std::tuple<T...>>>()
         };
-        for (const auto& [entity, _] : first_components) {
+        for (const entity entity : first_components.ids()) {
             if ((components<T>().contains(entity) && ...)) {
                 std::forward<Fn>(fn)(entity, components<T>()[entity]...);
             }
