@@ -18,6 +18,8 @@ enum class event : u8 {
 
 class app {
 public:
+    app();
+
     /// Adds a system to run on a given event.
     app& add_system(event event, system system);
 

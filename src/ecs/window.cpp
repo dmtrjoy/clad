@@ -22,11 +22,13 @@ public:
     impl& operator=(const impl& other) noexcept = delete;
     impl& operator=(impl&& other) noexcept = default;
 
-    ~impl()
+    ~impl() noexcept
     {
         assert(m_window != nullptr);
         SDL_DestroyWindow(m_window);
     }
+
+    [[nodiscard]] SDL_Window* native() const noexcept { return m_window; }
 
 private:
     SDL_Window* m_window { nullptr };
@@ -39,5 +41,7 @@ window::window(
 }
 
 window::~window() noexcept = default;
+
+SDL_Window* window::native() const noexcept { return m_pimpl->native(); }
 
 } // namespace clad

@@ -98,16 +98,15 @@ public:
     ///
     /// \param id The `id` of the element to insert.
     /// \param args The arguments to forward to the constructor of the element.
-    /// \return A reference to the inserted element.
     template <typename... Args>
-    reference emplace(const id_type id, Args&&... args)
+    void emplace(const id_type id, Args&&... args)
     {
         assert(id != s_tombstone);
 
         if (contains(id)) {
             reference value = m_dense_values[m_sparse[id]];
             value = value_type(std::forward<Args>(args)...);
-            return value;
+            return;
         }
 
         if (id >= m_sparse.size()) {
@@ -159,6 +158,8 @@ public:
         const id_type dense_id { m_sparse[id] };
         return dense_id != s_tombstone && m_dense_ids[dense_id] == id;
     };
+
+    const std::vector<id_type>& ids() const noexcept { return m_dense_ids; }
 
 private:
     static constexpr id_type s_tombstone = std::numeric_limits<id_type>().max();

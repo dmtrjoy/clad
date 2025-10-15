@@ -4,6 +4,9 @@
 #include <memory>
 #include <string>
 
+class renderer;
+struct SDL_Window;
+
 namespace clad {
 
 /// A resizable window with a title and dimensions.
@@ -42,6 +45,9 @@ public:
 private:
     class impl;
     std::unique_ptr<impl> m_pimpl;
+
+    friend class renderer;
+    [[nodiscard]] SDL_Window* native() const noexcept;
 };
 
 } // namespace clad
