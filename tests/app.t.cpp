@@ -1,26 +1,25 @@
-#include "app.hpp"
-#include "world.hpp"
+#include "clad/app/app.hpp"
 
 #include "gtest/gtest.h"
+
+#include "clad/app/event.hpp"
+#include "clad/ecs/world.hpp"
 
 namespace clad::test {
 
 namespace {
 
-    void test_system(world& world) { }
+    void test_system(World& world) { }
 
 } // namespace
 
-// TEST(AppTest, AddSystem)
-// {
-//     // GIVEN
-//     app app;
-//
-//     // WHEN
-//     app.add_system(event::startup, test_system)
-//         .add_system(event::update, test_system)
-//         .add_system(event::shutdown, test_system)
-//         .run();
-// }
+TEST(AppTest, AddSystem)
+{
+    // GIVEN
+    App app;
+
+    // WHEN
+    app.schedule(Event::Startup, test_system).run();
+}
 
 } // namespace clad::test

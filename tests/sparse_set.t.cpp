@@ -1,8 +1,8 @@
-#include "sparse_set.hpp"
-
-#include "types.hpp"
+#include "clad/std/sparse_set.hpp"
 
 #include "gtest/gtest.h"
+
+#include "clad/std/types.hpp"
 
 namespace clad::test {
 
