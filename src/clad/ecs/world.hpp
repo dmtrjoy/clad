@@ -7,29 +7,30 @@
 #include <unordered_map>
 #include <utility>
 
-#include "any.hpp"
+#include "clad/std/any.hpp"
+#include "clad/std/sparse_set.hpp"
+
 #include "entity.hpp"
-#include "sparse_set.hpp"
 
 namespace clad {
 
 /// A specialized container for storing, querying, and interacting with
 /// entities, components, and resources.
-class world {
+class World {
 public:
-    /// Creates a new `::entity`.
+    /// Creates a new `::Entity`.
     ///
-    /// \return A new `::entity` identifier.
-    entity create() noexcept { return m_next_entity++; }
+    /// \return A new entity identifier.
+    Entity create() noexcept { return m_next_entity++; }
 
-    /// Inserts a component into this `::world` and associates it with an
-    /// `::entity`.
+    /// Inserts a component into this world and associates it with an
+    /// `::Entity`.
     ///
     /// \tparam T The type of component to insert.
     /// \param entity The `::entity` to associate the component with.
     /// \param component The component to insert.
     template <typename T>
-    void insert(entity entity, const T& component)
+    void insert(const Entity entity, const T& component)
     {
         sparse_set<T>& components { this->components<T>() };
         components.insert(entity, component);
@@ -44,7 +45,7 @@ public:
     /// \param args The arguments to forward to the constructor of the
     ///     component.
     template <typename T, typename... Args>
-    void emplace(const entity entity, Args&&... args)
+    void emplace(const Entity entity, Args&&... args)
     {
         sparse_set<T>& components { this->components<T>() };
         components.emplace(entity, std::forward<Args>(args)...);
@@ -132,7 +133,7 @@ public:
         auto& first_components {
             components<std::tuple_element_t<0, std::tuple<T...>>>()
         };
-        for (const entity entity : first_components.ids()) {
+        for (const Entity entity : first_components.ids()) {
             if ((components<T>().contains(entity) && ...)) {
                 std::forward<Fn>(fn)(entity, components<T>()[entity]...);
             }
@@ -140,7 +141,7 @@ public:
     }
 
 private:
-    entity m_next_entity = 0;
+    Entity m_next_entity = 0;
     std::unordered_map<std::type_index, any> m_components;
     std::unordered_map<std::type_index, any> m_resources;
 };

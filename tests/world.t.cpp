@@ -1,8 +1,8 @@
-#include "world.hpp"
-
-#include "sparse_set.hpp"
+#include "clad/ecs/world.hpp"
 
 #include "gtest/gtest.h"
+
+#include "clad/std/sparse_set.hpp"
 
 namespace clad::test {
 
@@ -26,7 +26,7 @@ struct window_resource {
 
 class WorldTest : public testing::Test {
 protected:
-    world world;
+    World world;
 };
 
 TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
@@ -35,8 +35,8 @@ TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
     // ...
 
     // WHEN
-    const entity entity1 { world.create() };
-    const entity entity2 { world.create() };
+    const Entity entity1 { world.create() };
+    const Entity entity2 { world.create() };
 
     // THEN
     EXPECT_EQ(entity1, 0);
@@ -46,7 +46,7 @@ TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
 TEST_F(WorldTest, AddComponent_ComponentIsPresent)
 {
     // GIVEN
-    const entity entity { world.create() };
+    const Entity entity { world.create() };
     const vec2 vec;
 
     // WHEN
@@ -95,7 +95,7 @@ TEST_F(WorldTest, View_ComponentsAreUpdated)
 
     /// WHEN
     world.view<vec2>(
-        [viewed_vec](const entity entity, vec2& vec) { vec = viewed_vec; });
+        [viewed_vec](const Entity /*entity*/, vec2& vec) { vec = viewed_vec; });
     const sparse_set<vec2>& vecs = { world.components<vec2>() };
 
     // THEN

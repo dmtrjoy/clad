@@ -9,20 +9,20 @@
 
 namespace clad {
 
-class input::impl {
+class Input::Impl {
 public:
-    [[nodiscard]] bool is_key_pressed(const key key)
+    [[nodiscard]] bool is_key_pressed(const Key key)
     {
-        if (key == key::up && m_pressed[SDLK_UP]) {
+        if (key == Key::Up && m_pressed[SDLK_UP]) {
             return true;
         }
-        if (key == key::down && m_pressed[SDLK_DOWN]) {
+        if (key == Key::Down && m_pressed[SDLK_DOWN]) {
             return true;
         }
-        if (key == key::left && m_pressed[SDLK_LEFT]) {
+        if (key == Key::Left && m_pressed[SDLK_LEFT]) {
             return true;
         }
-        if (key == key::right && m_pressed[SDLK_RIGHT]) {
+        if (key == Key::Right && m_pressed[SDLK_RIGHT]) {
             return true;
         }
         return false;
@@ -62,20 +62,20 @@ private:
     bool m_quit { false };
 };
 
-input::input()
-    : m_pimpl(std::make_unique<impl>())
+Input::Input()
+    : m_pimpl(std::make_unique<Impl>())
 {
 }
 
-input::~input() = default;
+Input::~Input() = default;
 
-bool input::is_key_pressed(const key key)
+bool Input::is_key_pressed(const Key key)
 {
     return m_pimpl->is_key_pressed(key);
 }
 
-void input::poll() { m_pimpl->poll(); }
+void Input::poll() { m_pimpl->poll(); }
 
-bool input::quit() const { return m_pimpl->quit(); }
+bool Input::quit() const { return m_pimpl->quit(); }
 
 } // namespace clad

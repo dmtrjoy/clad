@@ -8,21 +8,21 @@
 
 namespace clad {
 
-class window::impl {
+class Window::Impl {
 public:
-    impl(const std::string& title, const int width, const int height) noexcept
+    Impl(const std::string& title, const int width, const int height) noexcept
         : m_window(SDL_CreateWindow(
               title.c_str(), width, height, SDL_WINDOW_RESIZABLE))
     {
         assert(m_window != nullptr);
     }
 
-    impl(const impl& other) noexcept = delete;
-    impl(impl&& other) noexcept = default;
-    impl& operator=(const impl& other) noexcept = delete;
-    impl& operator=(impl&& other) noexcept = default;
+    Impl(const Impl& other) noexcept = delete;
+    Impl(Impl&& other) noexcept = default;
+    Impl& operator=(const Impl& other) noexcept = delete;
+    Impl& operator=(Impl&& other) noexcept = default;
 
-    ~impl() noexcept
+    ~Impl() noexcept
     {
         assert(m_window != nullptr);
         SDL_DestroyWindow(m_window);
@@ -34,14 +34,14 @@ private:
     SDL_Window* m_window { nullptr };
 };
 
-window::window(
+Window::Window(
     const std::string& title, const int width, const int height) noexcept
-    : m_pimpl(std::make_unique<impl>(title, width, height))
+    : m_pimpl(std::make_unique<Impl>(title, width, height))
 {
 }
 
-window::~window() noexcept = default;
+Window::~Window() noexcept = default;
 
-SDL_Window* window::native() const noexcept { return m_pimpl->native(); }
+SDL_Window* Window::native() const noexcept { return m_pimpl->native(); }
 
 } // namespace clad

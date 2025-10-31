@@ -1,14 +1,14 @@
 #ifndef CLAD_COLOR_HPP
 #define CLAD_COLOR_HPP
 
-#include "types.hpp"
+#include "clad/std/types.hpp"
 
 namespace clad {
 
-enum class color : u8 {
-    transparent,
-    white,
-    black,
+enum class Color : u8 {
+    Transparent,
+    White,
+    Black,
 };
 
 } // namespace clad

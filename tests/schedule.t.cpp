@@ -1,9 +1,9 @@
-#include "schedule.hpp"
-
-#include "entity.hpp"
-#include "world.hpp"
+#include "clad/app/schedule.hpp"
 
 #include "gtest/gtest.h"
+
+#include "clad/ecs/entity.hpp"
+#include "clad/ecs/world.hpp"
 
 namespace clad::test {
 
@@ -13,17 +13,17 @@ namespace {
         bool has_run = false;
     };
 
-    void create(world& world)
+    void create(World& world)
     {
-        entity entity = world.create();
+        Entity entity = world.create();
         test_component component { .has_run = true };
         world.insert(entity, component);
     }
 
-    void create_two_entities(world& world)
+    void create_two_entities(World& world)
     {
-        entity entity1 = world.create();
-        entity entity2 = world.create();
+        Entity entity1 = world.create();
+        Entity entity2 = world.create();
         test_component component { .has_run = true };
         world.insert(entity1, component);
         world.insert(entity2, component);
@@ -34,10 +34,10 @@ namespace {
 TEST(ScheduleTest, Run_SystemsRanSequentially)
 {
     // GIVEN
-    schedule schedule;
-    schedule.add_system(create).add_system(create_two_entities);
+    Schedule schedule;
+    schedule.add(create, create_two_entities);
 
-    world world;
+    World world;
 
     // WHEN
     schedule.run(world);

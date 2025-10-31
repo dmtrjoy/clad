@@ -5,7 +5,7 @@
 
 namespace clad {
 
-using system = void (*)(world&);
+using System = void (*)(World&);
 
 } // namespace clad
 
