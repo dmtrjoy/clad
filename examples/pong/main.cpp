@@ -19,8 +19,8 @@ namespace {
 struct Input {
     static void build(clad::App& app)
     {
-        app.emplace<clad::Input>();
-        app.schedule(clad::Event::Update, poll);
+        app.emplace_resource<clad::Input>();
+        app.add_systems<clad::Update>(poll);
     }
 
     static void poll(clad::World& world)
@@ -39,10 +39,10 @@ struct Render {
     {
         clad::World& world { app.world() };
         auto& window { world.resource<clad::Window>() };
-        app.emplace<clad::Renderer>(window);
-        app.schedule(clad::Event::PreUpdate, clear);
-        app.schedule(clad::Event::Update, render);
-        app.schedule(clad::Event::PostUpdate, present);
+        app.emplace_resource<clad::Renderer>(window);
+        app.add_systems<clad::PreUpdate>(clear);
+        app.add_systems<clad::Update>(render);
+        app.add_systems<clad::PostUpdate>(present);
     }
 
     static void clear(clad::World& world)
@@ -75,7 +75,8 @@ struct Window {
     static void build(clad::App& app)
     {
         SDL_Init(SDL_INIT_VIDEO);
-        app.emplace<clad::Window>("PONG", DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        app.emplace_resource<clad::Window>(
+            "PONG", DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 };
 
@@ -127,11 +128,12 @@ void move_player(clad::World& world)
 
 void move_ball(clad::World& world)
 {
+    static const float DELTA = 0.01;
     world.view<Ball, clad::Transform>(
         [&world](const clad::Entity /*entity*/, Ball& /*ball*/,
             clad::Transform& transform) {
-            transform.x += 0.01;
-            transform.y += 0.01;
+            transform.x += DELTA;
+            transform.y += DELTA;
         });
 }
 
@@ -142,10 +144,9 @@ void shutdown(clad::World& /*world*/) { std::println("shutdown"); }
 int main()
 {
     clad::App app;
-    app.install<Input, Window, Render>();
-    app.schedule(clad::Event::Startup, startup)
-        .schedule(clad::Event::Update, move_ball)
-        .schedule(clad::Event::Update, move_player)
-        .schedule(clad::Event::Shutdown, shutdown)
+    app.add_plugins(Input {}, Window {}, Render {});
+    app.add_systems<clad::Startup>(startup)
+        .add_systems<clad::Update>(move_ball, move_player)
+        .add_systems<clad::Shutdown>(shutdown)
         .run();
 }

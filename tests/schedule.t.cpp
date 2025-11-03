@@ -35,7 +35,7 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
 {
     // GIVEN
     Schedule schedule;
-    schedule.add(create, create_two_entities);
+    schedule.add_systems(create, create_two_entities);
 
     World world;
 
@@ -44,7 +44,7 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
 
     // THEN
     sparse_set<test_component> components = world.components<test_component>();
-    ASSERT_EQ(components.size(), 3);
+    EXPECT_EQ(components.size(), 3);
 }
 
 } // namespace clad::test

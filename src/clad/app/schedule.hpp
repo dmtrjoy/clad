@@ -8,6 +8,9 @@
 
 namespace clad {
 
+template <class T>
+concept ScheduleLabel = std::is_empty_v<T> && std::default_initializable<T>;
+
 class Schedule {
 public:
     /// Adds one or more `::System`s to to this schedule.
@@ -18,7 +21,7 @@ public:
     /// \return A reference to this schedule.
     template <typename... Args>
         requires((std::same_as<Args, System>) && ...)
-    Schedule& add(const Args... systems) noexcept
+    Schedule& add_systems(const Args... systems) noexcept
     {
         (m_systems.push_back(std::move(systems)), ...);
         return *this;
