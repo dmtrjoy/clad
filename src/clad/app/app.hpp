@@ -78,7 +78,7 @@ public:
     {
         const auto type_id { std::type_index(typeid(T)) };
         assert(m_plugins.find(type_id) != m_plugins.end());
-        return any_cast<T>(m_plugins[type_id]);
+        return any_cast<T>(m_plugins.at(type_id));
     }
 
     /// Runs this app.
@@ -89,7 +89,7 @@ public:
     {
         const auto type_id { std::type_index(typeid(T)) };
         assert(m_schedules.find(type_id) != m_schedules.end());
-        return m_schedules[type_id];
+        return m_schedules.at(type_id);
     }
 
     World& world() noexcept { return m_world; }
