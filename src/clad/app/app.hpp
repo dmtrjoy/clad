@@ -3,13 +3,13 @@
 
 #include <cassert>
 #include <concepts>
+#include <map>
+#include <memory>
 #include <typeindex>
-#include <unordered_map>
 #include <utility>
 
 #include "clad/app/event_loop.hpp"
 #include "clad/ecs/system.hpp"
-#include "clad/std/any.hpp"
 
 #include "plugin.hpp"
 #include "schedule.hpp"
@@ -37,10 +37,13 @@ public:
     {
         (
             [&]<typename T>(T&& plugin) {
-                // TODO: If possible, turn this into a compile-time constraint.
                 const auto type_id { std::type_index(typeid(T)) };
+                // TODO: If possible, turn this into a compile-time constraint.
                 assert(m_plugins.find(type_id) == m_plugins.end());
-                m_plugins.emplace(type_id, std::forward<T>(plugin));
+                m_plugin_buffer.emplace_back(
+                    std::make_unique<PluginHolder<T>>(std::forward<T>(plugin)));
+                m_plugins.emplace(type_id,
+                    std::make_unique<PluginHolder<T>>(std::forward<T>(plugin)));
             }(std::forward<Plugins>(plugins)),
             ...);
         return *this;
@@ -60,11 +63,13 @@ public:
         return *this;
     }
 
-    void build() noexcept
+    /// Builds every plugin added to this app.
+    App& build() noexcept
     {
-        for (auto& it : m_plugins) {
-            // TODO: Call build() on each plugin. Will need type erasure.
+        for (auto& plugin : m_plugin_buffer) {
+            plugin->build(*this);
         }
+        return *this;
     }
 
     template <typename T, typename... Args>
@@ -78,7 +83,8 @@ public:
     {
         const auto type_id { std::type_index(typeid(T)) };
         assert(m_plugins.find(type_id) != m_plugins.end());
-        return any_cast<T>(m_plugins[type_id]);
+        auto* holder = static_cast<PluginHolder<T>*>(m_plugins[type_id].get());
+        return holder->data;
     }
 
     /// Runs this app.
@@ -95,8 +101,33 @@ public:
     World& world() noexcept { return m_world; }
 
 private:
+    struct PluginPlaceholder {
+        PluginPlaceholder() noexcept = default;
+        PluginPlaceholder(const PluginPlaceholder& other) = delete;
+        PluginPlaceholder(PluginPlaceholder&& other) noexcept = delete;
+        PluginPlaceholder& operator=(const PluginPlaceholder& other) = delete;
+        PluginPlaceholder& operator=(PluginPlaceholder&& other) noexcept
+            = delete;
+        virtual ~PluginPlaceholder() = default;
+        virtual void build(App& app) = 0;
+    };
+
+    template <typename T>
+    struct PluginHolder final : PluginPlaceholder {
+        template <typename... Args>
+        explicit PluginHolder(Args&&... args)
+            : data(std::forward<Args>(args)...)
+        {
+        }
+
+        void build(App& app) override { data.build(app); }
+
+        T data;
+    };
+
     World m_world;
-    std::unordered_map<std::type_index, any> m_plugins;
+    std::vector<std::unique_ptr<PluginPlaceholder>> m_plugin_buffer;
+    std::map<std::type_index, std::unique_ptr<PluginPlaceholder>> m_plugins;
     std::unordered_map<std::type_index, Schedule> m_schedules;
     bool m_running { true };
 };

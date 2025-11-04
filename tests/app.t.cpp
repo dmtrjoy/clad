@@ -49,6 +49,16 @@ TEST(AppTest, AddPlugins_DuplicatePlugins_ProgramCrashes)
         "Assertion failed: (m_plugins.find(type_id) == m_plugins.end())*");
 }
 
+TEST(AppTest, AddPlugins_PluginsAreBuilt)
+{
+    // GIVEN
+    App app;
+    app.add_plugins(FooPlugin {});
+
+    // WHEN/THEN
+    EXPECT_DEATH(app.build(), "Assertion failed: (false)*");
+}
+
 // TEST(AppTest, AddPlugins_MissingBuildMemberFunction_CompilationFails)
 // {
 //     // GIVEN
