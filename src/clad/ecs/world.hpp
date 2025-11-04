@@ -114,7 +114,8 @@ public:
         const auto it { m_resources.find(type_id) };
 
         if (it == m_resources.end()) {
-            throw std::out_of_range("Resource not found");
+            throw std::out_of_range(
+                "Resource '" + std::string(type_id.name()) + "' not found");
         }
 
         return any_cast<T>(it->second);

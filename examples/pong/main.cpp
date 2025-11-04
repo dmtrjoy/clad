@@ -144,9 +144,10 @@ void shutdown(clad::World& /*world*/) { std::println("shutdown"); }
 int main()
 {
     clad::App app;
-    app.add_plugins(Input {}, Window {}, Render {});
     app.add_systems<clad::Startup>(startup)
         .add_systems<clad::Update>(move_ball, move_player)
         .add_systems<clad::Shutdown>(shutdown)
+        .add_plugins(Input {}, Window {}, Render {})
+        .build()
         .run();
 }
