@@ -9,4 +9,4 @@ using System = void (*)(World&);
 
 } // namespace clad
 
-#endif
+#endif // !CLAD_SYSTEM_HPP
