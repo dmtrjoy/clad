@@ -2,6 +2,7 @@
 
 #include "clad/app/app.hpp"
 #include "clad/app/event_loop.hpp"
+#include "clad/app/sdl3_plugin.hpp"
 #include "clad/color/color.hpp"
 #include "clad/ecs/entity.hpp"
 #include "clad/ecs/world.hpp"
@@ -74,7 +75,6 @@ struct Window {
 
     static void build(clad::App& app)
     {
-        SDL_Init(SDL_INIT_VIDEO);
         app.emplace_resource<clad::Window>(
             "PONG", DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
@@ -143,11 +143,10 @@ void shutdown(clad::World& /*world*/) { std::println("shutdown"); }
 
 int main()
 {
+    SDL_Init(SDL_INIT_VIDEO);
     clad::App app;
-    app.add_systems<clad::Startup>(startup)
-        .add_systems<clad::Update>(move_ball, move_player)
-        .add_systems<clad::Shutdown>(shutdown)
-        .add_plugins(Input {}, Window {}, Render {})
-        .build()
-        .run();
+    // app.add_systems<clad::Startup>(startup)
+    //     .add_systems<clad::Update>(move_ball, move_player)
+    //     .add_systems<clad::Shutdown>(shutdown)
+    app.add_plugins(clad::Sdl3Plugin {}).build().run();
 }

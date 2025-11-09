@@ -8,13 +8,15 @@
 #include <typeindex>
 #include <utility>
 
-#include "clad/app/event_loop.hpp"
 #include "clad/ecs/system.hpp"
 
+#include "event_loop.hpp"
 #include "plugin.hpp"
 #include "schedule.hpp"
 
 namespace clad {
+
+using Runner = void (*)(App&);
 
 struct Startup { };
 struct PreUpdate { };
@@ -87,8 +89,26 @@ public:
         return holder->data;
     }
 
+    Runner& runner() noexcept { return m_runner; }
+
+    void startup() noexcept
+    {
+        assert(m_state == State::NotStarted);
+        schedule<Startup>().run(m_world);
+    }
+
+    void shutdown() noexcept { schedule<Shutdown>().run(m_world); }
+
+    [[nodiscard]] bool quit() const noexcept { return m_quit; }
+
+    void request_quit() noexcept { m_quit = true; }
+
     /// Runs this app.
-    void run();
+    void run()
+    {
+        assert(m_runner != nullptr);
+        m_runner(*this);
+    }
 
     template <ScheduleLabel T>
     Schedule& schedule() noexcept
@@ -98,9 +118,24 @@ public:
         return m_schedules[type_id];
     }
 
+    void tick()
+    {
+        schedule<PreUpdate>().run(m_world);
+        schedule<Update>().run(m_world);
+        schedule<PostUpdate>().run(m_world);
+    }
+
     World& world() noexcept { return m_world; }
 
 private:
+    enum class State : u8 {
+        NotStarted,
+        Starting,
+        Running,
+        ShuttingDown,
+        Stopped
+    };
+
     struct PluginPlaceholder {
         PluginPlaceholder() noexcept = default;
         PluginPlaceholder(const PluginPlaceholder& other) = delete;
@@ -125,11 +160,19 @@ private:
         T data;
     };
 
-    World m_world;
     std::vector<std::unique_ptr<PluginPlaceholder>> m_plugin_buffer;
     std::map<std::type_index, std::unique_ptr<PluginPlaceholder>> m_plugins;
-    std::unordered_map<std::type_index, Schedule> m_schedules;
-    bool m_running { true };
+    std::unordered_map<std::type_index, Schedule> m_schedules = {
+        { std::type_index(typeid(Startup)), Schedule {} },
+        { std::type_index(typeid(PreUpdate)), Schedule {} },
+        { std::type_index(typeid(Update)), Schedule {} },
+        { std::type_index(typeid(PostUpdate)), Schedule {} },
+        { std::type_index(typeid(Shutdown)), Schedule {} },
+    };
+    bool m_quit { false };
+    Runner m_runner { nullptr };
+    State m_state { State::NotStarted };
+    World m_world;
 };
 
 } // namespace clad
