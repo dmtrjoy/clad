@@ -142,8 +142,8 @@ public:
         m_sparse[id] = s_tombstone;
     };
 
-    /// Checks if there is an element with an identifier equivalent to `id` in
-    /// the container.
+    /// Checks whether there is an element with an identifier equivalent to `id`
+    /// in the container.
     ///
     /// \param id The `id` of the element to search for.
     /// \return `true` if a matching element is found; `false` otherwise.

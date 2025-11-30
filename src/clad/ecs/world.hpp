@@ -1,6 +1,7 @@
 #ifndef CLAD_WORLD_HPP
 #define CLAD_WORLD_HPP
 
+#include <cassert>
 #include <stdexcept>
 #include <tuple>
 #include <typeindex>
@@ -8,9 +9,10 @@
 #include <utility>
 
 #include "clad/std/any.hpp"
-#include "clad/std/sparse_set.hpp"
 
 #include "entity.hpp"
+#include "storage.hpp"
+#include "tick.hpp"
 
 namespace clad {
 
@@ -18,10 +20,14 @@ namespace clad {
 /// entities, components, and resources.
 class World {
 public:
-    /// Creates a new `::Entity`.
+    /// Spawns a new `::Entity` into this world.
     ///
     /// \return A new entity identifier.
-    Entity create() noexcept { return m_next_entity++; }
+    Entity spawn() noexcept
+    {
+        ++m_tick;
+        return m_next_entity++;
+    }
 
     /// Inserts a component into this world and associates it with an
     /// `::Entity`.
@@ -30,10 +36,11 @@ public:
     /// \param entity The `::entity` to associate the component with.
     /// \param component The component to insert.
     template <typename T>
-    void insert(const Entity entity, const T& component)
+    void insert_component(const Entity entity, const T& component)
     {
-        sparse_set<T>& components { this->components<T>() };
-        components.insert(entity, component);
+        Storage<T>& components { this->components<T>() };
+        components.insert(entity, { m_tick, m_tick }, component);
+        ++m_tick;
     }
 
     /// Inserts a new component into this `::world` constructed in-place with
@@ -45,10 +52,11 @@ public:
     /// \param args The arguments to forward to the constructor of the
     ///     component.
     template <typename T, typename... Args>
-    void emplace(const Entity entity, Args&&... args)
+    void emplace_component(const Entity entity, Args&&... args)
     {
-        sparse_set<T>& components { this->components<T>() };
-        components.emplace(entity, std::forward<Args>(args)...);
+        m_components.emplace(
+            entity, { m_tick, m_tick }, std::forward<Args>(args)...);
+        ++m_tick;
     }
 
     /// Inserts a new resource into this `::world` constructed in-place with
@@ -64,20 +72,22 @@ public:
     /// \param args The arguments to forward to the constructor of the
     ///     resource.
     template <typename T, typename... Args>
-    void emplace(Args&&... args)
+    void emplace_resource(Args&&... args)
     {
         const auto type_id { std::type_index(typeid(T)) };
         m_resources.emplace(std::piecewise_construct,
             std::forward_as_tuple(type_id),
             std::forward_as_tuple(
                 std::in_place_type_t<T> {}, std::forward<Args>(args)...));
+        ++m_tick;
     }
 
     /// Clears all entities from this `::world`.
-    void clear()
+    void clear() noexcept
     {
         m_next_entity = 0;
         m_components.clear();
+        ++m_tick;
     }
 
     /// Returns this `::world`'s component collection of the given type.
@@ -85,21 +95,12 @@ public:
     /// \tparam T The type of component collection to return.
     /// \return A reference to the component collection.
     template <typename T>
-    sparse_set<T>& components()
+    Storage<T>& components() noexcept
     {
         const auto type_id { std::type_index(typeid(T)) };
-        auto it { m_components.find(type_id) };
-
-        if (it == m_components.end()) {
-            it = m_components
-                     .emplace(std::piecewise_construct,
-                         std::forward_as_tuple(type_id),
-                         std::forward_as_tuple(
-                             std::in_place_type_t<sparse_set<T>> {}))
-                     .first;
-        }
-
-        return any_cast<sparse_set<T>>(it->second);
+        const auto it { m_components.find(type_id) };
+        assert(it != m_components.end());
+        return any_cast<T>(it->second);
     }
 
     /// Returns a resource from this `::world`.
@@ -142,7 +143,8 @@ public:
     }
 
 private:
-    Entity m_next_entity = 0;
+    Entity m_next_entity { 0 };
+    Tick m_tick;
     std::unordered_map<std::type_index, any> m_components;
     std::unordered_map<std::type_index, any> m_resources;
 };

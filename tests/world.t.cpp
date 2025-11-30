@@ -1,60 +1,45 @@
 #include "clad/ecs/world.hpp"
 
+#include <vector>
+
 #include "gtest/gtest.h"
 
-#include "clad/std/sparse_set.hpp"
+#include "clad/math/vec.hpp"
+#include "clad/window/window.hpp"
 
 namespace clad::test {
-
-// A 2D texture component. Only for testing purposes.
-struct texture2 {
-    int id;
-};
-
-/// A 2D vector component. Only for testing purposes.
-struct vec2 {
-    float x { 0.0 };
-    float y { 0.0 };
-    auto operator<=>(const vec2&) const = default;
-};
-
-/// A window resource. Only for testing purposes.
-struct window_resource {
-    int width { 0 };
-    int height { 0 };
-};
 
 class WorldTest : public testing::Test {
 protected:
     World world;
 };
 
-TEST_F(WorldTest, CreateEntity_EntityIsIncremented)
+TEST_F(WorldTest, SpawnEntity_EntityIsIncremented)
 {
     // GIVEN
     // ...
 
     // WHEN
-    const Entity entity1 { world.create() };
-    const Entity entity2 { world.create() };
+    const Entity entity1 { world.spawn() };
+    const Entity entity2 { world.spawn() };
 
     // THEN
     EXPECT_EQ(entity1, 0);
     EXPECT_EQ(entity2, entity1 + 1);
 }
 
-TEST_F(WorldTest, AddComponent_ComponentIsPresent)
+TEST_F(WorldTest, InsertComponent_ComponentIsPresent)
 {
     // GIVEN
-    const Entity entity { world.create() };
-    const vec2 vec;
+    const Entity entity { world.spawn() };
+    const Vec2 vec;
 
     // WHEN
-    world.insert(entity, vec);
-    const sparse_set<vec2>& vecs { world.components<vec2>() };
+    world.insert_component(entity, vec);
+    const std::vector<Vec2>& vecs { world.components<Vec2>() };
 
     // THEN
-    ASSERT_TRUE(vecs.contains(entity));
+    ASSERT_EQ(vecs.size(), 1);
     EXPECT_EQ(vecs[entity], vec);
 }
 
@@ -65,8 +50,8 @@ TEST_F(WorldTest, AddResource_ResourceIsPresent)
     constexpr int height { 600 };
 
     // WHEN
-    world.emplace<window_resource>(width, height);
-    const auto& window { world.resource<window_resource>() };
+    world.emplace_resource<Window>(width, height);
+    const auto& window { world.resource<Window>() };
 
     // THEN
     EXPECT_EQ(window.width, width);
@@ -80,8 +65,8 @@ TEST_F(WorldTest, AddResource_ExistingResource_ResourceIsUpdated)
     constexpr int height { 100 };
 
     // WHEN
-    world.emplace<window_resource>(width, height);
-    const auto& window { world.resource<window_resource>() };
+    world.emplace_resource<Window>(width, height);
+    const auto& window { world.resource<Window>() };
 
     // THEN
     EXPECT_EQ(window.width, width);
@@ -91,12 +76,12 @@ TEST_F(WorldTest, AddResource_ExistingResource_ResourceIsUpdated)
 TEST_F(WorldTest, View_ComponentsAreUpdated)
 {
     // GIVEN
-    const vec2 viewed_vec { .x = 100.0, .y = 100.0 };
+    constexpr Vec2 viewed_vec { .x = 100.0, .y = 100.0 };
 
     /// WHEN
-    world.view<vec2>(
-        [viewed_vec](const Entity /*entity*/, vec2& vec) { vec = viewed_vec; });
-    const sparse_set<vec2>& vecs = { world.components<vec2>() };
+    world.view<Vec2>(
+        [viewed_vec](const Entity /*entity*/, Vec2& vec) { vec = viewed_vec; });
+    const std::vector<Vec2>& vecs { world.components<Vec2>() };
 
     // THEN
     for (const auto& vec : vecs) {

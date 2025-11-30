@@ -4,14 +4,14 @@
 namespace clad {
 
 struct Vec2 {
-    float x;
-    float y;
+    float x { 0.0 };
+    float y { 0.0 };
 };
 
 struct Vec3 {
-    float x;
-    float y;
-    float z;
+    float x { 0.0 };
+    float y { 0.0 };
+    float z { 0.0 };
 };
 
 } // namespace clad
