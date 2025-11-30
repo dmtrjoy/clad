@@ -26,7 +26,7 @@ struct Shutdown { };
 
 class App {
 public:
-    App() { m_world.emplace<EventLoop>(); }
+    App() { m_world.emplace_resource<EventLoop>(); }
 
     /// Adds one or more `::Plugin`s to this app.
     ///
@@ -77,7 +77,7 @@ public:
     template <typename T, typename... Args>
     void emplace_resource(Args&&... args) noexcept
     {
-        m_world.emplace<T>(std::forward<Args>(args)...);
+        m_world.emplace_resource<T>(std::forward<Args>(args)...);
     }
 
     template <Plugin T>

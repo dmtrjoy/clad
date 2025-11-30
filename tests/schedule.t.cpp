@@ -1,6 +1,7 @@
 #include "clad/app/schedule.hpp"
 
 #include "gtest/gtest.h"
+#include <vector>
 
 #include "clad/ecs/entity.hpp"
 #include "clad/ecs/world.hpp"
@@ -9,24 +10,24 @@ namespace clad::test {
 
 namespace {
 
-    struct test_component {
+    struct TestComponent {
         bool has_run = false;
     };
 
-    void create(World& world)
+    void spawn(World& world)
     {
-        Entity entity = world.create();
-        test_component component { .has_run = true };
-        world.insert(entity, component);
+        Entity entity = world.spawn();
+        TestComponent component { .has_run = true };
+        world.insert_component(entity, component);
     }
 
-    void create_two_entities(World& world)
+    void spawn_two_entities(World& world)
     {
-        Entity entity1 = world.create();
-        Entity entity2 = world.create();
-        test_component component { .has_run = true };
-        world.insert(entity1, component);
-        world.insert(entity2, component);
+        Entity entity1 = world.spawn();
+        Entity entity2 = world.spawn();
+        TestComponent component { .has_run = true };
+        world.insert_component(entity1, component);
+        world.insert_component(entity2, component);
     }
 
 } // namespace
@@ -35,7 +36,7 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
 {
     // GIVEN
     Schedule schedule;
-    schedule.add_systems(create, create_two_entities);
+    schedule.add_systems(spawn, spawn_two_entities);
 
     World world;
 
@@ -43,7 +44,9 @@ TEST(ScheduleTest, Run_SystemsRanSequentially)
     schedule.run(world);
 
     // THEN
-    sparse_set<test_component> components = world.components<test_component>();
+    const std::vector<TestComponent>& components {
+        world.components<TestComponent>()
+    };
     EXPECT_EQ(components.size(), 3);
 }
 
